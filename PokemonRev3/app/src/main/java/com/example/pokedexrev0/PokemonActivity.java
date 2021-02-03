@@ -3,6 +3,8 @@ package com.example.pokedexrev0;
 import android.app.AppComponentFactory;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -25,9 +27,11 @@ public class PokemonActivity extends AppCompatActivity {
     private String  url;
     private TextView type1;
     private TextView type2;
+    private Button buttonCaught;
     private String pokeName;
     private RequestQueue requestQueue;
     private String pokeNumber;
+    private boolean pokemonIsCaught = false;
 
 
     @Override
@@ -46,6 +50,7 @@ public class PokemonActivity extends AppCompatActivity {
             numberText = findViewById(R.id.pokemonNumber);
             type1 = findViewById(R.id.pokemonType1);
             type2 = findViewById(R.id.pokemonType2);
+            buttonCaught = findViewById(R.id.catchButton);
             //Log.d("PokeOnCreate",url);
             load();
             //nameText.setText("Name: "+name);
@@ -96,6 +101,18 @@ public class PokemonActivity extends AppCompatActivity {
         });
         requestQueue.add(request);
 
+    }
+
+    public void toggleCatch(View view) {
+        //gotta catch em all!
+        if(pokemonIsCaught == false) {
+            pokemonIsCaught = true;
+            buttonCaught.setText("Release");
+        }
+        else if (pokemonIsCaught == true) {
+            pokemonIsCaught = false;
+            buttonCaught.setText("Catch");
+        }
     }
 
 }

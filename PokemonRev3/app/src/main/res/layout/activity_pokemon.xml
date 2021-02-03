@@ -32,6 +32,12 @@
         android:text="poke type1"
         android:textAlignment="center"></TextView>
 
+    <Button
+        android:id="@+id/catchButton"
+        android:layout_width="match_parent"
+        android:onClick="toggleCatch"
+        android:layout_height="wrap_content"
+        android:text="Catch" />
 
 
 </LinearLayout>
