@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -25,7 +27,7 @@ import java.util.List;
 
 import static android.content.ContentValues.TAG;
 
-public class PokedexAdapter extends RecyclerView.Adapter<PokedexAdapter.PokedexViewHolder> {
+public class PokedexAdapter extends RecyclerView.Adapter<PokedexAdapter.PokedexViewHolder> implements Filterable {
 
     public static class PokedexViewHolder extends RecyclerView.ViewHolder{
         public LinearLayout containerView;
@@ -55,6 +57,8 @@ public class PokedexAdapter extends RecyclerView.Adapter<PokedexAdapter.PokedexV
             });
         }
     }
+
+
     /*
     private List<Pokemon> pokemon = Arrays.asList(
             new Pokemon("Bulbasaur",1),
@@ -65,7 +69,40 @@ public class PokedexAdapter extends RecyclerView.Adapter<PokedexAdapter.PokedexV
         );
     */
     private List<Pokemon> pokemon = new ArrayList<>();
+    private List<Pokemon> filtered= pokemon;
     private RequestQueue requestQueue;
+
+    @Override
+    public Filter getFilter() {
+        return new PokemonFilter();
+    }
+
+    private class PokemonFilter extends Filter {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            String constraintNew = constraint.toString();
+            // implement your search here!
+            ArrayList<Pokemon> filteredPokemon = new ArrayList<>();
+            for (Pokemon p: pokemon){
+                if (p.getName().equals(constraintNew)){
+                    Log.d("Search issue",constraintNew);
+                    filteredPokemon.add(p);
+                }
+            }
+            FilterResults results = new FilterResults();
+
+            results.values = filteredPokemon; // you need to create this variable!
+            results.count = filteredPokemon.size();
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+
+            filtered = (List<Pokemon>) results.values;
+            notifyDataSetChanged();
+        }
+    }
 
     PokedexAdapter(Context context){
         Log.d("PokedexAdapter","new PokedexAdapter");
@@ -131,7 +168,8 @@ public class PokedexAdapter extends RecyclerView.Adapter<PokedexAdapter.PokedexV
     @Override
     //tells the list how long it should be
     public int getItemCount() {
-        Log.d("PokedexAdapter", String.valueOf(pokemon.size()));
-        return pokemon.size();
+        Log.d("PokedexAdapter", String.valueOf(filtered.size()));
+        return filtered.size();
     }
+
 }
