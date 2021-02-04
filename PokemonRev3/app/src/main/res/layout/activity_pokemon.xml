@@ -28,10 +28,16 @@
     <TextView
         android:id="@+id/pokemonType2"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
         android:text="poke type1"
         android:textAlignment="center"></TextView>
 
+    <TextView
+        android:id="@+id/pokemonDes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="poke type1"
+        android:textAlignment="center"></TextView>
 
 
 </LinearLayout>

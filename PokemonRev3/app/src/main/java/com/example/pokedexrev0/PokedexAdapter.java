@@ -69,7 +69,7 @@ public class PokedexAdapter extends RecyclerView.Adapter<PokedexAdapter.PokedexV
         );
     */
     private List<Pokemon> pokemon = new ArrayList<>();
-    private List<Pokemon> filtered= pokemon;
+    private List<Pokemon> filtered;
     private RequestQueue requestQueue;
 
     @Override
@@ -84,8 +84,8 @@ public class PokedexAdapter extends RecyclerView.Adapter<PokedexAdapter.PokedexV
             // implement your search here!
             ArrayList<Pokemon> filteredPokemon = new ArrayList<>();
             for (Pokemon p: pokemon){
-                if (p.getName().equals(constraintNew)){
-                    Log.d("Search issue",constraintNew);
+                if (p.getName().toLowerCase().contains(constraintNew.toLowerCase())){
+                    Log.d("Search issue",p.getName());
                     filteredPokemon.add(p);
                 }
             }
@@ -108,6 +108,7 @@ public class PokedexAdapter extends RecyclerView.Adapter<PokedexAdapter.PokedexV
         Log.d("PokedexAdapter","new PokedexAdapter");
         requestQueue = Volley.newRequestQueue(context);
         loadPokemon();
+        filtered=pokemon;
     }
 
     public void loadPokemon(){
@@ -153,6 +154,8 @@ public class PokedexAdapter extends RecyclerView.Adapter<PokedexAdapter.PokedexV
     //creates the view that we see on the screen
     public PokedexViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.pokedex_row,parent,false);
+        Log.d("PokedexAdapter", "oncreateviewholder");
+
         return new PokedexViewHolder(view);
     }
 
@@ -160,7 +163,8 @@ public class PokedexAdapter extends RecyclerView.Adapter<PokedexAdapter.PokedexV
     //telling what each row will look like
     //set the different properties of each row, but this is what reads in a click....  keyBinding to that ViewHolder
     public void onBindViewHolder(@NonNull PokedexViewHolder holder, int position) {
-        Pokemon current = pokemon.get(position);
+        Pokemon current = filtered.get(position);
+        Log.d("PokedexAdapter", String.valueOf(filtered.size()));
         holder.textView.setText(current.getName());
         holder.containerView.setTag(current);
     }

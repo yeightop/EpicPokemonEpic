@@ -46,11 +46,13 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     @Override
     public boolean onQueryTextChange(String newText) {
         adapter.getFilter().filter(newText);
+
         return false;
     }
     @Override
     public boolean onQueryTextSubmit(String newText) {
         adapter.getFilter().filter(newText);
+
         return false;
     }
 
