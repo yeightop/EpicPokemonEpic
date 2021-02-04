@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -25,7 +27,7 @@ import java.util.List;
 
 import static android.content.ContentValues.TAG;
 
-public class PokedexAdapter extends RecyclerView.Adapter<PokedexAdapter.PokedexViewHolder> {
+public class PokedexAdapter extends RecyclerView.Adapter<PokedexAdapter.PokedexViewHolder> implements Filterable {
 
     public static class PokedexViewHolder extends RecyclerView.ViewHolder{
         public LinearLayout containerView;
@@ -55,6 +57,8 @@ public class PokedexAdapter extends RecyclerView.Adapter<PokedexAdapter.PokedexV
             });
         }
     }
+
+
     /*
     private List<Pokemon> pokemon = Arrays.asList(
             new Pokemon("Bulbasaur",1),
@@ -65,12 +69,46 @@ public class PokedexAdapter extends RecyclerView.Adapter<PokedexAdapter.PokedexV
         );
     */
     private List<Pokemon> pokemon = new ArrayList<>();
+    private List<Pokemon> filtered;
     private RequestQueue requestQueue;
+
+    @Override
+    public Filter getFilter() {
+        return new PokemonFilter();
+    }
+
+    private class PokemonFilter extends Filter {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            String constraintNew = constraint.toString();
+            // implement your search here!
+            ArrayList<Pokemon> filteredPokemon = new ArrayList<>();
+            for (Pokemon p: pokemon){
+                if (p.getName().toLowerCase().contains(constraintNew.toLowerCase())){
+                    Log.d("Search issue",p.getName());
+                    filteredPokemon.add(p);
+                }
+            }
+            FilterResults results = new FilterResults();
+
+            results.values = filteredPokemon; // you need to create this variable!
+            results.count = filteredPokemon.size();
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+
+            filtered = (List<Pokemon>) results.values;
+            notifyDataSetChanged();
+        }
+    }
 
     PokedexAdapter(Context context){
         Log.d("PokedexAdapter","new PokedexAdapter");
         requestQueue = Volley.newRequestQueue(context);
         loadPokemon();
+        filtered=pokemon;
     }
 
     public void loadPokemon(){
@@ -116,6 +154,8 @@ public class PokedexAdapter extends RecyclerView.Adapter<PokedexAdapter.PokedexV
     //creates the view that we see on the screen
     public PokedexViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.pokedex_row,parent,false);
+        Log.d("PokedexAdapter", "oncreateviewholder");
+
         return new PokedexViewHolder(view);
     }
 
@@ -123,7 +163,8 @@ public class PokedexAdapter extends RecyclerView.Adapter<PokedexAdapter.PokedexV
     //telling what each row will look like
     //set the different properties of each row, but this is what reads in a click....  keyBinding to that ViewHolder
     public void onBindViewHolder(@NonNull PokedexViewHolder holder, int position) {
-        Pokemon current = pokemon.get(position);
+        Pokemon current = filtered.get(position);
+        Log.d("PokedexAdapter", String.valueOf(filtered.size()));
         holder.textView.setText(current.getName());
         holder.containerView.setTag(current);
     }
@@ -131,7 +172,8 @@ public class PokedexAdapter extends RecyclerView.Adapter<PokedexAdapter.PokedexV
     @Override
     //tells the list how long it should be
     public int getItemCount() {
-        Log.d("PokedexAdapter", String.valueOf(pokemon.size()));
-        return pokemon.size();
+        Log.d("PokedexAdapter", String.valueOf(filtered.size()));
+        return filtered.size();
     }
+
 }
