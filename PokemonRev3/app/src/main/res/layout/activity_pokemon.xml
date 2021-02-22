@@ -44,8 +44,10 @@
         android:id="@+id/pokemonDes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="poke type1"
+        android:text="poke descrpition"
         android:textAlignment="center"></TextView>
+
+
 
 
 

@@ -72,6 +72,7 @@ public class PokedexAdapter extends RecyclerView.Adapter<PokedexAdapter.PokedexV
     private List<Pokemon> filtered;
     private RequestQueue requestQueue;
 
+
     @Override
     public Filter getFilter() {
         return new PokemonFilter();
@@ -129,11 +130,15 @@ public class PokedexAdapter extends RecyclerView.Adapter<PokedexAdapter.PokedexV
                     for (int i = 0; i < results.length();i++){
                         JSONObject result = results.getJSONObject(i);
                         String name = result.getString("name");
+                        //String des = result.getString("flavor_text_entries");
 
                         pokemon.add(new Pokemon(
                                 name.substring(0,1).toUpperCase()+name.substring(1),
                                 result.getString("url")
+
                         ));
+                        Log.d("pull des test", result.getString("url"));
+                        //Log.d("flavor", result.getString("flavor_text_entries"));
                     }
                     notifyDataSetChanged();
                 } catch (JSONException e) {
@@ -144,6 +149,7 @@ public class PokedexAdapter extends RecyclerView.Adapter<PokedexAdapter.PokedexV
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("pokeapi pull","Pokemon list error");
+
             }
         });
         requestQueue.add(request);

@@ -32,6 +32,8 @@ public class PokemonActivity extends AppCompatActivity {
     private RequestQueue requestQueue;
     private String pokeNumber;
     private boolean pokemonIsCaught = false;
+    private TextView description;
+    private String desURL="https://pokeapi.co/docs/v2#pokemon-species";
 
 
     @Override
@@ -51,6 +53,7 @@ public class PokemonActivity extends AppCompatActivity {
             type1 = findViewById(R.id.pokemonType1);
             type2 = findViewById(R.id.pokemonType2);
             buttonCaught = findViewById(R.id.catchButton);
+            description = findViewById(R.id.pokemonDes);
             //Log.d("PokeOnCreate",url);
             load();
             //nameText.setText("Name: "+name);
@@ -113,6 +116,42 @@ public class PokemonActivity extends AppCompatActivity {
             pokemonIsCaught = false;
             buttonCaught.setText("Catch");
         }
+    }
+
+    public void loadDes(){
+        description.setText("");
+
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, desURL+"/"+pokeNumber+"/", null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d("PokeRequest", "began request here");
+                try {
+                    JSONArray flavorEntries = response.getJSONArray("flavor_text_entries");
+                    for (int i = 0;i<flavorEntries.length();i++){
+                        JSONObject flavorEntry = flavorEntries.getJSONObject(i);
+                        String flavor = flavorEntry.getJSONObject("flavor_text");
+
+                        description.setText(flavor);
+
+                    }
+                    Log.d("typeTesting",response.getString("name"));
+                    Log.d("typeTesting", response.getString("id"));
+
+                }
+                catch (JSONException e){
+                    Log.e("PokeActive","JSON error");
+                }
+            }
+
+        }, new Response.ErrorListener(){
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("PokeActive","Poke list error");
+            }
+        });
+        requestQueue.add(request);
+
     }
 
 
