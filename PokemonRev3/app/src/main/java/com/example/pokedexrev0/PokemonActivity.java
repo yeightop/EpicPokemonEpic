@@ -21,6 +21,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.sql.Time;
+
+
 public class PokemonActivity extends AppCompatActivity {
     private TextView nameText;
     private TextView numberText;
@@ -33,7 +36,9 @@ public class PokemonActivity extends AppCompatActivity {
     private String pokeNumber;
     private boolean pokemonIsCaught = false;
     private TextView description;
-    private String desURL="https://pokeapi.co/docs/v2#pokemon-species";
+    private String desURL="https://pokeapi.co/api/v2/pokemon-species";
+
+
 
 
     @Override
@@ -56,7 +61,6 @@ public class PokemonActivity extends AppCompatActivity {
             description = findViewById(R.id.pokemonDes);
             //Log.d("PokeOnCreate",url);
             load();
-            Log.d("desURL",desURL+"/"+pokeNumber+"/"+" | "+ pokeNumber);
             loadDes();
             //nameText.setText("Name: "+name);
             ///numberText.setText("Number: "+number);
@@ -68,7 +72,7 @@ public class PokemonActivity extends AppCompatActivity {
         type2.setText("");
         nameText.setText("");
         numberText.setText("");
-
+        String passThisThru;
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -107,6 +111,7 @@ public class PokemonActivity extends AppCompatActivity {
         });
         requestQueue.add(request);
 
+
     }
 
     public void toggleCatch(View view) {
@@ -125,16 +130,20 @@ public class PokemonActivity extends AppCompatActivity {
         description.setText("");
         Log.d("desURL",desURL+"/"+pokeNumber+"/"+" | "+ pokeNumber);
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, desURL+"/"+133+"/", null, new Response.Listener<JSONObject>() {
+        String pokemonNumberText = numberText.getText().toString();
+        Log.d("textOne", numberText.getText().toString());
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET,  desURL + "/" + pokemonNumberText, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Log.d("PokeDesRequest", "began request here");
+                Log.d("textTwo", numberText.getText().toString());
+                Log.d("PokeDesRequest", "began request here | "+desURL + "/" + numberText.getText().toString());
                 try {
                     JSONArray flavorEntries = response.getJSONArray("flavor_text_entries");
                     for (int i = 0;i<flavorEntries.length();i++){
-                        JSONObject flavorEntry = flavorEntries.getJSONObject(i);
-                        String flavor = flavorEntry.getJSONObject("flavor_text").getString("flavor_text");
-                        Log.d("flavor: ",flavor+" | "+desURL+"/"+pokeNumber+"/");
+                        JSONObject flavorEntry = flavorEntries.getJSONObject(1);
+                        String flavor = flavorEntry.getString("flavor_text");
+                       // String lang= flavorEntry.getJSONObject("language")
+                        Log.d("flavor: ",flavor+" | " + "https://pokeapi.co/api/v2/pokemon-species/133/");
                         description.setText(flavor);
 
                     }
@@ -158,7 +167,7 @@ public class PokemonActivity extends AppCompatActivity {
     }
 
 
-    //
+
 
 
 
