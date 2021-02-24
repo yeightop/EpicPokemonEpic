@@ -56,6 +56,8 @@ public class PokemonActivity extends AppCompatActivity {
             description = findViewById(R.id.pokemonDes);
             //Log.d("PokeOnCreate",url);
             load();
+            Log.d("desURL",desURL+"/"+pokeNumber+"/"+" | "+ pokeNumber);
+            loadDes();
             //nameText.setText("Name: "+name);
             ///numberText.setText("Number: "+number);
 
@@ -88,6 +90,7 @@ public class PokemonActivity extends AppCompatActivity {
                     Log.d("typeTesting", response.getString("id"));
                     pokeName=response.getString("name");
                     pokeNumber=response.getString("id");
+                    Log.d("numberpoke:",pokeNumber);
                     nameText.setText(pokeName.substring(0,1).toUpperCase()+pokeName.substring(1));
                     numberText.setText(pokeNumber);
                 }
@@ -120,18 +123,18 @@ public class PokemonActivity extends AppCompatActivity {
 
     public void loadDes(){
         description.setText("");
+        Log.d("desURL",desURL+"/"+pokeNumber+"/"+" | "+ pokeNumber);
 
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, desURL+"/"+pokeNumber+"/", null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, desURL+"/"+133+"/", null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Log.d("PokeRequest", "began request here");
+                Log.d("PokeDesRequest", "began request here");
                 try {
                     JSONArray flavorEntries = response.getJSONArray("flavor_text_entries");
                     for (int i = 0;i<flavorEntries.length();i++){
                         JSONObject flavorEntry = flavorEntries.getJSONObject(i);
-                        String flavor = flavorEntry.getJSONObject("flavor_text");
-
+                        String flavor = flavorEntry.getJSONObject("flavor_text").getString("flavor_text");
+                        Log.d("flavor: ",flavor+" | "+desURL+"/"+pokeNumber+"/");
                         description.setText(flavor);
 
                     }
