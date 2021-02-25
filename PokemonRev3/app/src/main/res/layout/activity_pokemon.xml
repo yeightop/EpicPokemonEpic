@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -14,7 +16,7 @@
     <TextView
         android:id="@+id/pokemonNumber"
         android:layout_width="match_parent"
-        android:layout_height="44dp"
+        android:layout_height="wrap_content"
         android:text="poke number"
         android:textAlignment="center"></TextView>
 
@@ -33,20 +35,18 @@
         android:textAlignment="center"></TextView>
 
 
+    <ImageView
+        android:id="@+id/pokemonImage"
+        android:layout_width="match_parent"
+        android:layout_height="251dp"
+        tools:srcCompat="@tools:sample/avatars" />
+
     <Button
         android:id="@+id/catchButton"
         android:layout_width="match_parent"
         android:onClick="toggleCatch"
         android:layout_height="wrap_content"
         android:text="Catch" />
-
-    <TextView
-        android:id="@+id/pokemonDes"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="poke type1"
-        android:textAlignment="center"></TextView>
-
 
 
 </LinearLayout>

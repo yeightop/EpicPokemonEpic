@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         return false;
     }
+    
     @Override
     public boolean onQueryTextSubmit(String newText) {
         adapter.getFilter().filter(newText);

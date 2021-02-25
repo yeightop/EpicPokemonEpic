@@ -1,10 +1,14 @@
 package com.example.pokedexrev0;
 
 import android.app.AppComponentFactory;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -21,6 +25,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.net.URL;
+
 public class PokemonActivity extends AppCompatActivity {
     private TextView nameText;
     private TextView numberText;
@@ -32,6 +39,8 @@ public class PokemonActivity extends AppCompatActivity {
     private RequestQueue requestQueue;
     private String pokeNumber;
     private boolean pokemonIsCaught = false;
+    private ImageView pokeImage;
+    private String pokeImageKey;
 
 
     @Override
@@ -51,6 +60,7 @@ public class PokemonActivity extends AppCompatActivity {
             type1 = findViewById(R.id.pokemonType1);
             type2 = findViewById(R.id.pokemonType2);
             buttonCaught = findViewById(R.id.catchButton);
+            pokeImage = findViewById(R.id.pokemonImage);
             //Log.d("PokeOnCreate",url);
             load();
             //nameText.setText("Name: "+name);
@@ -86,6 +96,8 @@ public class PokemonActivity extends AppCompatActivity {
                     pokeName=response.getString("name");
                     pokeNumber=response.getString("id");
                     nameText.setText(pokeName.substring(0,1).toUpperCase()+pokeName.substring(1));
+                    pokeImageKey = response.getJSONObject("sprites").getString("front_default");
+                    new DownloadSpriteTask().execute(pokeImageKey);
                     numberText.setText(pokeNumber);
                 }
                 catch (JSONException e){
@@ -118,6 +130,26 @@ public class PokemonActivity extends AppCompatActivity {
 
     //
 
+
+    private class DownloadSpriteTask extends AsyncTask<String, Void, Bitmap> {
+        @Override
+        protected Bitmap doInBackground(String... strings) {
+            try {
+                URL url = new URL(strings[0]);
+                return BitmapFactory.decodeStream(url.openStream());
+            }
+            catch (IOException e) {
+                Log.e("cs50", "Download sprite error", e);
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            // load the bitmap into the ImageView!
+            pokeImage.setImageBitmap(bitmap);
+        }
+    }
 
 
 }
