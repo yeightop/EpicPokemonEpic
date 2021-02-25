@@ -1,6 +1,7 @@
 package com.example.pokedexrev0;
 
 import android.app.AppComponentFactory;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -61,7 +62,7 @@ public class PokemonActivity extends AppCompatActivity {
             description = findViewById(R.id.pokemonDes);
             //Log.d("PokeOnCreate",url);
             load();
-            loadDes();
+
             //nameText.setText("Name: "+name);
             ///numberText.setText("Number: "+number);
 
@@ -94,9 +95,11 @@ public class PokemonActivity extends AppCompatActivity {
                     Log.d("typeTesting", response.getString("id"));
                     pokeName=response.getString("name");
                     pokeNumber=response.getString("id");
+                    loadDes(pokeNumber);
                     Log.d("numberpoke:",pokeNumber);
                     nameText.setText(pokeName.substring(0,1).toUpperCase()+pokeName.substring(1));
                     numberText.setText(pokeNumber);
+
                 }
                 catch (JSONException e){
                     Log.e("PokeActive","JSON error");
@@ -126,16 +129,14 @@ public class PokemonActivity extends AppCompatActivity {
         }
     }
 
-    public void loadDes(){
+    public void loadDes(String pokeNumber){
         description.setText("");
-        Log.d("desURL",desURL+"/"+pokeNumber+"/"+" | "+ pokeNumber);
+        Log.d("numtext: ", numberText.getText().toString());
+        Log.d("desURL",desURL+"/"+pokeNumber+"/");
 
-        String pokemonNumberText = numberText.getText().toString();
-        Log.d("textOne", numberText.getText().toString());
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET,  desURL + "/" + pokemonNumberText, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET,  desURL + "/" + pokeNumber, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Log.d("textTwo", numberText.getText().toString());
                 Log.d("PokeDesRequest", "began request here | "+desURL + "/" + numberText.getText().toString());
                 try {
                     JSONArray flavorEntries = response.getJSONArray("flavor_text_entries");
