@@ -2,9 +2,11 @@ package com.example.pokedexrev0;
 
 import android.app.AppComponentFactory;
 import android.graphics.Bitmap;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -43,6 +45,10 @@ public class PokemonActivity extends AppCompatActivity {
     private String pokeImageKey;
 
 
+    private SharedPreferences preference;
+    private SharedPreferences.Editor editPreference;
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -65,6 +71,11 @@ public class PokemonActivity extends AppCompatActivity {
             load();
             //nameText.setText("Name: "+name);
             ///numberText.setText("Number: "+number);
+
+
+            preference = PreferenceManager.getDefaultSharedPreferences(this);
+            editPreference = preference.edit();
+            Log.d("PreferenceIssue", String.valueOf(preference.getAll()));
 
 
     }
@@ -91,6 +102,7 @@ public class PokemonActivity extends AppCompatActivity {
                             type2.setText(type);
                         }
                     }
+
                     Log.d("typeTesting",response.getString("name"));
                     Log.d("typeTesting", response.getString("id"));
                     pokeName=response.getString("name");
@@ -99,6 +111,15 @@ public class PokemonActivity extends AppCompatActivity {
                     pokeImageKey = response.getJSONObject("sprites").getString("front_default");
                     new DownloadSpriteTask().execute(pokeImageKey);
                     numberText.setText(pokeNumber);
+
+                    if(preference.contains(pokeName)) {
+                        pokemonIsCaught = true;
+                        buttonCaught.setText("Release");
+                    }
+                    else {
+
+                    }
+
                 }
                 catch (JSONException e){
                     Log.e("PokeActive","JSON error");
@@ -120,10 +141,12 @@ public class PokemonActivity extends AppCompatActivity {
         if(pokemonIsCaught == false) {
             pokemonIsCaught = true;
             buttonCaught.setText("Release");
+            editPreference.putBoolean(pokeName, pokemonIsCaught).apply();
         }
         else if (pokemonIsCaught == true) {
             pokemonIsCaught = false;
             buttonCaught.setText("Catch");
+            editPreference.remove(pokeName);
         }
     }
 

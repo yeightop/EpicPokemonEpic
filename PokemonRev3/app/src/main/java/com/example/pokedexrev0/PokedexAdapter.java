@@ -1,7 +1,9 @@
 package com.example.pokedexrev0;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.Intent;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +30,8 @@ import java.util.List;
 import static android.content.ContentValues.TAG;
 
 public class PokedexAdapter extends RecyclerView.Adapter<PokedexAdapter.PokedexViewHolder> implements Filterable {
+
+    private static SharedPreferences preference;
 
     public static class PokedexViewHolder extends RecyclerView.ViewHolder{
         public LinearLayout containerView;
@@ -109,6 +113,7 @@ public class PokedexAdapter extends RecyclerView.Adapter<PokedexAdapter.PokedexV
         requestQueue = Volley.newRequestQueue(context);
         loadPokemon();
         filtered=pokemon;
+        preference = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     public void loadPokemon(){
@@ -167,6 +172,10 @@ public class PokedexAdapter extends RecyclerView.Adapter<PokedexAdapter.PokedexV
         Log.d("PokedexAdapter", String.valueOf(filtered.size()));
         holder.textView.setText(current.getName());
         holder.containerView.setTag(current);
+
+        if(preference.contains(current.getName())) {
+            holder.textView.setCompoundDrawablesWithIntrinsicBounds(0,0, R.drawable.pokeball, 0);
+        }
     }
 
     @Override
