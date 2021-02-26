@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -29,6 +30,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Time;
+
 
 public class PokemonActivity extends AppCompatActivity {
     private TextView nameText;
@@ -41,12 +44,18 @@ public class PokemonActivity extends AppCompatActivity {
     private RequestQueue requestQueue;
     private String pokeNumber;
     private boolean pokemonIsCaught = false;
+
     private ImageView pokeImage;
     private String pokeImageKey;
 
 
     private SharedPreferences preference;
     private SharedPreferences.Editor editPreference;
+
+    private TextView description;
+    private String desURL="https://pokeapi.co/api/v2/pokemon-species";
+
+
 
 
     @Override
@@ -67,6 +76,7 @@ public class PokemonActivity extends AppCompatActivity {
             type2 = findViewById(R.id.pokemonType2);
             buttonCaught = findViewById(R.id.catchButton);
             pokeImage = findViewById(R.id.pokemonImage);
+            description = findViewById(R.id.pokemonDes);
             //Log.d("PokeOnCreate",url);
 
             preference = PreferenceManager.getDefaultSharedPreferences(this);
@@ -74,6 +84,7 @@ public class PokemonActivity extends AppCompatActivity {
 
 
             load();
+
             //nameText.setText("Name: "+name);
             ///numberText.setText("Number: "+number);
 
@@ -86,7 +97,7 @@ public class PokemonActivity extends AppCompatActivity {
         type2.setText("");
         nameText.setText("");
         numberText.setText("");
-
+        String passThisThru;
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -109,11 +120,12 @@ public class PokemonActivity extends AppCompatActivity {
                     Log.d("typeTesting", response.getString("id"));
                     pokeName=response.getString("name");
                     pokeNumber=response.getString("id");
+                    loadDes(pokeNumber);
+                    Log.d("numberpoke:",pokeNumber);
                     nameText.setText(pokeName.substring(0,1).toUpperCase()+pokeName.substring(1));
                     pokeImageKey = response.getJSONObject("sprites").getString("front_default");
                     new DownloadSpriteTask().execute(pokeImageKey);
                     numberText.setText(pokeNumber);
-
                     if(preference.contains(pokeName)) {
                         pokemonIsCaught = true;
                         buttonCaught.setText("Release");
@@ -139,6 +151,7 @@ public class PokemonActivity extends AppCompatActivity {
         });
         requestQueue.add(request);
         Log.d("checktoggle", String.valueOf(pokemonIsCaught));
+
     }
 
 
@@ -159,8 +172,46 @@ public class PokemonActivity extends AppCompatActivity {
         Log.d("toggleCatch", String.valueOf(pokemonIsCaught));
     }
 
+    public void loadDes(String pokeNumber){
+        description.setText("");
+        Log.d("numtext: ", numberText.getText().toString());
+        Log.d("desURL",desURL+"/"+pokeNumber+"/");
 
-    //
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET,  desURL + "/" + pokeNumber, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d("PokeDesRequest", "began request here | "+desURL + "/" + numberText.getText().toString());
+                try {
+                    JSONArray flavorEntries = response.getJSONArray("flavor_text_entries");
+                    for (int i = 0;i<flavorEntries.length();i++){
+                        JSONObject flavorEntry = flavorEntries.getJSONObject(1);
+                        String flavor = flavorEntry.getString("flavor_text");
+                       // String lang= flavorEntry.getJSONObject("language")
+                        Log.d("flavor: ",flavor+" | " + "https://pokeapi.co/api/v2/pokemon-species/133/");
+                        description.setText(flavor);
+
+                    }
+                    Log.d("typeTesting",response.getString("name"));
+                    Log.d("typeTesting", response.getString("id"));
+
+                }
+                catch (JSONException e){
+                    Log.e("PokeActive","JSON error");
+                }
+            }
+
+        }, new Response.ErrorListener(){
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("PokeActive","Poke list error");
+            }
+        });
+        requestQueue.add(request);
+
+    }
+
+
+
 
 
     private class DownloadSpriteTask extends AsyncTask<String, Void, Bitmap> {

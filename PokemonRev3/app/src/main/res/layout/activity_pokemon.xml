@@ -48,5 +48,14 @@
         android:layout_height="wrap_content"
         android:text="Catch" />
 
+    <TextView
+        android:id="@+id/pokemonDes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="poke descrpition"
+        android:textAlignment="center"></TextView>
+
+
+
 
 </LinearLayout>
