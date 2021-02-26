@@ -31,7 +31,7 @@ import static android.content.ContentValues.TAG;
 
 public class PokedexAdapter extends RecyclerView.Adapter<PokedexAdapter.PokedexViewHolder> implements Filterable {
 
-    private static SharedPreferences preference;
+
 
     public static class PokedexViewHolder extends RecyclerView.ViewHolder{
         public LinearLayout containerView;
@@ -72,9 +72,13 @@ public class PokedexAdapter extends RecyclerView.Adapter<PokedexAdapter.PokedexV
             new Pokemon("Hunter Wilder",5)
         );
     */
+
+
     private List<Pokemon> pokemon = new ArrayList<>();
     private List<Pokemon> filtered;
     private RequestQueue requestQueue;
+
+
 
     @Override
     public Filter getFilter() {
@@ -108,12 +112,17 @@ public class PokedexAdapter extends RecyclerView.Adapter<PokedexAdapter.PokedexV
         }
     }
 
+    private SharedPreferences preference;
+
     PokedexAdapter(Context context){
         Log.d("PokedexAdapter","new PokedexAdapter");
         requestQueue = Volley.newRequestQueue(context);
-        loadPokemon();
         filtered=pokemon;
         preference = PreferenceManager.getDefaultSharedPreferences(context);
+        loadPokemon();
+
+        Log.d("PreferenceIssueAda", String.valueOf(preference.getAll()));
+        Log.d("PreferenceIssueAda", "Created PokedexAdapter");
     }
 
     public void loadPokemon(){
@@ -171,11 +180,17 @@ public class PokedexAdapter extends RecyclerView.Adapter<PokedexAdapter.PokedexV
         Pokemon current = filtered.get(position);
         Log.d("PokedexAdapter", String.valueOf(filtered.size()));
         holder.textView.setText(current.getName());
-        holder.containerView.setTag(current);
+        Log.d("PreferenceIssueAda", current.getName());
+        Log.d("PreferenceIssueAda", String.valueOf(preference.getAll()));
 
-        if(preference.contains(current.getName())) {
+        if(preference.contains(current.getName().toLowerCase())) {
+
             holder.textView.setCompoundDrawablesWithIntrinsicBounds(0,0, R.drawable.pokeball, 0);
+            Log.d("preferenceStuff", "onlist " + current.getName());
+        } else {
+            holder.textView.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
         }
+        holder.containerView.setTag(current);
     }
 
     @Override

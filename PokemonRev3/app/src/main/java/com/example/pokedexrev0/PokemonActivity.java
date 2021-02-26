@@ -68,13 +68,15 @@ public class PokemonActivity extends AppCompatActivity {
             buttonCaught = findViewById(R.id.catchButton);
             pokeImage = findViewById(R.id.pokemonImage);
             //Log.d("PokeOnCreate",url);
+
+            preference = PreferenceManager.getDefaultSharedPreferences(this);
+            editPreference = preference.edit();
+
+
             load();
             //nameText.setText("Name: "+name);
             ///numberText.setText("Number: "+number);
 
-
-            preference = PreferenceManager.getDefaultSharedPreferences(this);
-            editPreference = preference.edit();
             Log.d("PreferenceIssue", String.valueOf(preference.getAll()));
 
 
@@ -117,8 +119,11 @@ public class PokemonActivity extends AppCompatActivity {
                         buttonCaught.setText("Release");
                     }
                     else {
-
+                        pokemonIsCaught = false;
+                        buttonCaught.setText("Catch");
                     }
+
+
 
                 }
                 catch (JSONException e){
@@ -133,21 +138,25 @@ public class PokemonActivity extends AppCompatActivity {
             }
         });
         requestQueue.add(request);
-
+        Log.d("checktoggle", String.valueOf(pokemonIsCaught));
     }
+
 
     public void toggleCatch(View view) {
         //gotta catch em all!
-        if(pokemonIsCaught == false) {
+        Log.d("toggleCatch", String.valueOf(pokemonIsCaught));
+        if(!pokemonIsCaught) {
             pokemonIsCaught = true;
             buttonCaught.setText("Release");
             editPreference.putBoolean(pokeName, pokemonIsCaught).apply();
         }
-        else if (pokemonIsCaught == true) {
-            pokemonIsCaught = false;
+        else{
+            pokemonIsCaught=false;
             buttonCaught.setText("Catch");
             editPreference.remove(pokeName);
+            editPreference.apply();
         }
+        Log.d("toggleCatch", String.valueOf(pokemonIsCaught));
     }
 
 
