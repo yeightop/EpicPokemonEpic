@@ -2,11 +2,11 @@
 Pokemon God tier app
 
 # Pokedex 2.0  (50 points)
- * Searching (10 points)
- * Catching (10 points)
- * Saving State (10 points)
- * Sprites (10 points)
- * Description (10 points)
+ * Hunter - Searching (10 points)
+ * Luke - Catching (10 points)
+ * Luke - Saving State (10 points)
+ * Luke - Sprites (10 points)
+ * Hunter - Description (10 points)
 
 ## Searching (10 points)
 Let’s add some new functionality to our Pokédex app! First, let’s give users the ability to search the Pokédex for their favorite Pokémon.
